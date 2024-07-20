@@ -22,6 +22,7 @@ export const NoticeSearch = () => {
     };
     const handlerModal = () => {
         setModal(!modal);
+        console.log(modal);
     };
     return (
         <NoticeSearchStyled>

@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const LeftMenuBarStyled = styled.div`
+export const LeftMenuBarStyled = styled.div<{
+    isclicked: string | undefined;
+}>`
     a {
         cursor: pointer;
     }
@@ -33,6 +35,7 @@ export const LeftMenuBarStyled = styled.div`
         padding-top: 30px;
         border-bottom: 1px solid #d6effc;
         color: #602e2e;
+
         &:hover {
             transition: 1s;
             .child-menu-box {
@@ -73,4 +76,8 @@ export const LeftMenuBarStyled = styled.div`
 export const StyledLink = styled(Link)`
     color: #602e2e;
     text-decoration: none;
+
+    visibility: visible;
+    height: 100%;
+    margin-top: 30px;
 `;

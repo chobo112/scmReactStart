@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import logoImage from '../../../assets/logo.png';
 import logo_img from '../../../assets/logo_img.png';
 import menu from '../../../assets/menu.png';
@@ -8,9 +9,14 @@ import { useRecoilState } from 'recoil';
 
 export const LeftMenuBar = () => {
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+    const [isClick, setIsClick] = useState<boolean>(false);
+
+    const handlerClick = () => {
+        setIsClick(!isClick);
+    };
 
     return (
-        <LeftMenuBarStyled>
+        <LeftMenuBarStyled isclicked={isClick.toString()}>
             <a href="/react">
                 <img src={logo_img} alt="happyjob" />
             </a>
@@ -27,11 +33,11 @@ export const LeftMenuBar = () => {
                         <li key={menuAttrt.mnu_id} className="parent-menu">
                             <img src={menu} alt="menu" />
                             {menuAttrt.mnu_nm}
-                            <div className="child-menu-box">
+                            <div className="child-menu-box" onClick={handlerClick}>
                                 {menuAttrt.nodeList.map((node) => {
                                     return (
                                         <StyledLink to={'/react' + node.mnu_url} key={node.mnu_id}>
-                                            <div>{node.mnu_nm}</div>
+                                            <div onClick={handlerClick}>{node.mnu_nm}</div>
                                         </StyledLink>
                                     );
                                 })}
