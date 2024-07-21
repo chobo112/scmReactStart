@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { ComnCodMgrMainStyled } from './styled';
-import { MouseEventHandler, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../../../common/Button/Button';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
@@ -63,6 +63,15 @@ export const ComnCodMgrMain = () => {
         setModalOpen(!modalOpen);
     };
 
+    const fomatData = (timeStamp: number) => {
+        const date = new Date(timeStamp);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     return (
         <ComnCodMgrMainStyled>
             <Button onClick={handlerModal}>신규등록</Button>
@@ -72,8 +81,8 @@ export const ComnCodMgrMain = () => {
                         <StyledTh size={10}>그룹코드</StyledTh>
                         <StyledTh size={5}>그룹코드명</StyledTh>
                         <StyledTh size={10}>그룹코드 설명</StyledTh>
-                        <StyledTh size={7}>사용여부</StyledTh>
-                        <StyledTh size={10}>등록일</StyledTh>
+                        <StyledTh size={3}>사용여부</StyledTh>
+                        <StyledTh size={7}>등록일</StyledTh>
                         <StyledTh size={5}>비고</StyledTh>
                     </tr>
                 </thead>
@@ -84,14 +93,14 @@ export const ComnCodMgrMain = () => {
                                 <tr
                                     key={a.grp_cod}
                                     onClick={() => {
-                                        navigate(a.grp_cod);
+                                        navigate(a.grp_cod, { state: { grpCodNm: a.grp_cod_nm } });
                                     }}
                                 >
                                     <StyledTd>{a.grp_cod}</StyledTd>
                                     <StyledTd>{a.grp_cod_nm}</StyledTd>
                                     <StyledTd>{a.grp_cod_eplti}</StyledTd>
                                     <StyledTd>{a.use_poa}</StyledTd>
-                                    <StyledTd>{a.fst_enlm_dtt}</StyledTd>
+                                    <StyledTd>{fomatData(a.fst_enlm_dtt)}</StyledTd>
                                     <StyledTd>
                                         <button onClick={(e) => handlerUpdateModal(e, a.grp_cod)}>수정</button>
                                     </StyledTd>
