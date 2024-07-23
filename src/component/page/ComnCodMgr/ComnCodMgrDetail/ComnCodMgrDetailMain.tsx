@@ -8,24 +8,25 @@ import { modalState } from '../../../../stores/modalState';
 import { ComnCodMgrDetailModal } from '../ComnCodMgrDetailModal/ComnCodMgrDetailModal';
 import { ContentBox } from '../../../common/ContentBox/ContentBox';
 import { ComnCodMgrDetailMainStyled } from './styled';
+import { IComnCodMgrDetail, IComnCodMgrDetailRespose } from '../../../../models/interface/api/comnCodMgrModels';
 
-export interface IComnCodMgrDetailRespose {
-    totalCntComnDtlCod: number;
-    listComnDtlCodModel: IComnCodMgrDetail[];
-}
+// export interface IComnCodMgrDetailRespose {
+//     totalCntComnDtlCod: number;
+//     listComnDtlCodModel: IComnCodMgrDetail[];
+// }
 
-export interface IComnCodMgrDetail {
-    row_num: string;
-    grp_cod: string;
-    grp_cod_nm: string;
-    dtl_cod: string;
-    dtl_cod_nm: string;
-    dtl_cod_eplti: string;
-    use_poa: string;
-    fst_enlm_dtt: string;
-    fst_rgst_sst_id: string;
-    fnl_mdfd_dtt: string;
-}
+// export interface IComnCodMgrDetail {
+//     row_num: string;
+//     grp_cod: string;
+//     grp_cod_nm: string;
+//     dtl_cod: string;
+//     dtl_cod_nm: string;
+//     dtl_cod_eplti: string;
+//     use_poa: string;
+//     fst_enlm_dtt: string;
+//     fst_rgst_sst_id: string;
+//     fnl_mdfd_dtt: string;
+// }
 
 export const ComnCodMgrDetailMain = () => {
     // const grpCod = useParams();

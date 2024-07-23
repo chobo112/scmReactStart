@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { ComnCodMgrMainStyled } from './styled';
 import { useContext, useEffect, useState } from 'react';
@@ -9,25 +9,27 @@ import { ComnCodMgrModal } from '../ComnCodMgrModal/ComnCodMgrModal';
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
 import { useNavigate } from 'react-router-dom';
 import { ComnCodContext } from '../../../../api/provider/ComnCodProvider';
+import { IComnCod, ISearchComnCodMgr } from '../../../../models/interface/api/comnCodMgrModels';
+import { postComnCodMgrApi } from '../../../../api/postComnCodMgrApi';
 
-export interface IComnCod {
-    row_num: number;
-    grp_cod: string;
-    grp_cod_nm: string;
-    grp_cod_eplti: string;
-    use_poa: string;
-    fst_enlm_dtt: number;
-    reg_date?: string;
-    fst_rgst_sst_id?: string;
-    fnl_mdfd_dtt?: string;
-    fnl_mdfr_sst_id?: string;
-    detailcnt: number;
-}
+// export interface IComnCod {
+//     row_num: number;
+//     grp_cod: string;
+//     grp_cod_nm: string;
+//     grp_cod_eplti: string;
+//     use_poa: string;
+//     fst_enlm_dtt: number;
+//     reg_date?: string;
+//     fst_rgst_sst_id?: string;
+//     fnl_mdfd_dtt?: string;
+//     fnl_mdfr_sst_id?: string;
+//     detailcnt: number;
+// }
 
-export interface ISearchComnCodMgr {
-    totalCount: number;
-    listComnGrpCod: IComnCod[];
-}
+// export interface ISearchComnCodMgr {
+//     totalCount: number;
+//     listComnGrpCod: IComnCod[];
+// }
 
 export const ComnCodMgrMain = () => {
     const [comnCodList, setComnCodList] = useState<IComnCod[]>();
@@ -42,16 +44,35 @@ export const ComnCodMgrMain = () => {
         // console.log(searchKeyword);
     }, [searchKeyword]);
 
-    const searchComnCod = (cpage?: number) => {
+    const searchComnCod = async (cpage?: number) => {
         cpage = cpage || 1;
 
-        axios
-            .post('/system/listComnGrpCodJson.do', { ...searchKeyword, currentPage: cpage, pageSize: 5 })
-            .then((res: AxiosResponse<ISearchComnCodMgr>) => {
-                setComnCodList(res.data.listComnGrpCod);
-                setTotalCount(res.data.totalCount);
-                setCurrentPage(cpage || 1);
-            });
+        // api 모듈화
+        // const postComnCod = await postComnCodMgrApi<ISearchComnCodMgr>({
+        //     ...searchKeyword,
+        //     currentPage: cpage,
+        //     pageSize: 5,
+        // });
+        // if (postComnCod) {
+        //     setComnCodList(postComnCod.listComnGrpCod);
+        //     setTotalCount(postComnCod.totalCount);
+        //     setCurrentPage(cpage || 1);
+        // }
+
+        const postAction: AxiosRequestConfig = {
+            method: 'POST',
+            url: '/system/listComnGrpCodJson.do',
+            data: { ...searchKeyword, currentPage: cpage, pageSize: 5 },
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        axios(postAction).then((res: AxiosResponse<ISearchComnCodMgr>) => {
+            setComnCodList(res.data.listComnGrpCod);
+            setTotalCount(res.data.totalCount);
+            setCurrentPage(cpage || 1);
+        });
     };
 
     const handlerModal = () => {
@@ -59,7 +80,7 @@ export const ComnCodMgrMain = () => {
         setGrpCod('');
     };
 
-    const handlerUpdateModal = (event: React.MouseEvent<HTMLElement, MouseEvent>, grpCod: string) => {
+    const handlerUpdateModal = (event: React.MouseEvent<HTMLElement, MouseEvent>, grpCod?: string) => {
         event.stopPropagation();
         setGrpCod(grpCod);
         setModalOpen(!modalOpen);
@@ -108,7 +129,7 @@ export const ComnCodMgrMain = () => {
                                 <tr
                                     key={a.grp_cod}
                                     onClick={() => {
-                                        navigate(a.grp_cod, { state: { grpCodNm: a.grp_cod_nm } });
+                                        navigate(a.grp_cod as string, { state: { grpCodNm: a.grp_cod_nm } });
                                     }}
                                 >
                                     <StyledTd>{a.grp_cod}</StyledTd>

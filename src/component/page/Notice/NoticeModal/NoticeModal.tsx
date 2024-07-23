@@ -4,8 +4,8 @@ import axios, { AxiosResponse } from 'axios';
 import { useRecoilState } from 'recoil';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
-import { INoticeList } from '../NoticeMain/NoticeMain';
 import NoImage from '../../../../assets/noImage.jpg';
+import { INoticeDetail, INoticeList, IPostResponse } from '../../../../models/interface/api/noticeModels';
 
 export interface NoticeModalProps {
     modalOpen: (seq?: number) => void;
@@ -13,13 +13,13 @@ export interface NoticeModalProps {
     handleSuccess: () => void;
 }
 
-export interface IPostResponse {
-    result: string;
-}
+// export interface IPostResponse {
+//     result: string;
+// }
 
-export interface INoticeDetail {
-    detailValue: INoticeList;
-}
+// export interface INoticeDetail {
+//     detailValue: INoticeList;
+// }
 
 export const NoticeModal: FC<NoticeModalProps> = ({ modalOpen, noticeSeq, handleSuccess }) => {
     const title = useRef<HTMLInputElement>(null);

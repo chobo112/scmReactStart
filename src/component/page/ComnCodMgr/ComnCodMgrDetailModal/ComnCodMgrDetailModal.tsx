@@ -5,6 +5,7 @@ import { Button } from '../../../common/Button/Button';
 import { FC, useEffect, useState } from 'react';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { nullCheck } from '../../../../common/nullCheck';
+import { IDetailCod, IPostResponse } from '../../../../models/interface/api/comnCodMgrModels';
 
 export interface IComnCodMgrDetailProps {
     grpCod?: string;
@@ -13,24 +14,29 @@ export interface IComnCodMgrDetailProps {
     modalClose: () => void;
 }
 
-export interface IPostResponse {
-    result: string;
-    comnDtlCodModel: IDetailCod;
-}
+// export interface IPostResponse {
+//     result: string;
+//     comnDtlCodModel: IDetailCod;
+// }
 
-export interface IDetailCod {
-    dtl_grp_cod?: string;
-    dtl_cod?: string;
-    dtl_cod_nm?: string;
-    use_poa?: string;
-    dtl_cod_eplti?: string;
-}
+// export interface IDetailCod {
+//     dtl_grp_cod: string;
+//     dtl_cod: string;
+//     dtl_cod_nm: string;
+//     use_poa: string;
+//     dtl_cod_eplti?: string;
+// }
 
-export interface IDetailCommCod extends IDetailCod {}
+export const defaultDelatilObject = {
+    dtl_grp_cod: '',
+    dtl_cod: '',
+    dtl_cod_nm: '',
+    use_poa: '',
+};
 
 export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpCodNm, detailCod, modalClose }) => {
     const [modalOpen, setModalOpen] = useRecoilState<boolean>(modalState);
-    const [delatilObject, setDetailObject] = useState<IDetailCod>();
+    const [delatilObject, setDetailObject] = useState<IDetailCod>(defaultDelatilObject);
 
     useEffect(() => {
         if (modalOpen && detailCod) searchComnCodDetail();
@@ -90,9 +96,9 @@ export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpC
 
     const handlerUpdate = async () => {
         const isNull = nullCheck([
-            { inval: delatilObject?.dtl_cod, msg: '상세코드 id를 입력해주세요' },
-            { inval: delatilObject?.dtl_cod_nm, msg: '상세코드 명을 입력해주세요' },
-            { inval: delatilObject?.use_poa, msg: '사용여부를 입력해주세요' },
+            { inval: delatilObject.dtl_cod, msg: '상세코드 id를 입력해주세요' },
+            { inval: delatilObject.dtl_cod_nm, msg: '상세코드 명을 입력해주세요' },
+            { inval: delatilObject.use_poa, msg: '사용여부를 입력해주세요' },
         ]);
         if (!isNull) return;
         const postAction: AxiosRequestConfig = {
@@ -137,7 +143,7 @@ export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpC
     };
 
     const cleanUp = () => {
-        setDetailObject({});
+        setDetailObject(defaultDelatilObject);
     };
 
     return (

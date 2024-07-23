@@ -9,33 +9,34 @@ import { modalState } from '../../../../stores/modalState';
 import { Protal } from '../../../common/potal/Portal';
 import { NoticeModal } from '../NoticeModal/NoticeModal';
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
+import { INoticeList, IPageParam, ISearchResponse } from '../../../../models/interface/api/noticeModels';
 
-export interface INoticeList {
-    file_ext: string | null;
-    file_name: string | null;
-    file_size: number;
-    logical_path: string | null;
-    loginID: string;
-    noti_content: string;
-    noti_date: string;
-    noti_seq: number;
-    noti_title: string;
-    phsycal_path: string | null;
-}
+// export interface INoticeList {
+//     file_ext: string | null;
+//     file_name: string | null;
+//     file_size: number;
+//     logical_path: string | null;
+//     loginID: string;
+//     noti_content: string;
+//     noti_date: string;
+//     noti_seq: number;
+//     noti_title: string;
+//     phsycal_path: string | null;
+// }
 
-export interface ISearchResponse {
-    listCount: number;
-    noticeList: INoticeList[];
-}
+// export interface ISearchResponse {
+//     listCount: number;
+//     noticeList: INoticeList[];
+// }
 
-export interface INoticeMainProps {
-    searchParam?: IParam;
-}
+// export interface INoticeMainProps {
+//     searchParam?: IParam;
+// }
 
-export interface IPageParam {
-    cpage: number;
-    pageSize: number;
-}
+// export interface IPageParam {
+//     cpage: number;
+//     pageSize: number;
+// }
 
 export const NoticeMain = () => {
     const [noticeList, setNoticeList] = useState<INoticeList[]>();

@@ -2,41 +2,40 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { ComnCodMgrModalStyled, ComnCodMgrTableStyled } from './styled';
 import { Button } from '../../../common/Button/Button';
-import React, { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { nullCheck } from '../../../../common/nullCheck';
+import { IComnCodModal, IComnGrpCodDetail, IPostResponse } from '../../../../models/interface/api/comnCodMgrModels';
 
-export interface IComnCod {
-    grp_cod?: string;
-    grp_cod_nm?: string;
-    use_poa?: string;
-    grp_cod_eplti?: string;
-    fst_rgst_sst_id?: string;
-    fnl_mdfr_sst_id?: string;
-}
+// export interface IComnCod {
+//     grp_cod: string;
+//     grp_cod_nm: string;
+//     use_poa: string;
+//     grp_cod_eplti?: string;
+// }
 
-export interface IPostResponse {
-    result: string;
-}
+// export interface IPostResponse {
+//     result: string;
+// }
+
+// export interface IComnGrpCodModel extends IComnCod {
+//     fnl_mdfd_dtt?: string;
+// }
+
+// export interface IComnGrpCodDetail {
+//     comnGrpCodModel: IComnGrpCodModel;
+//     result: string;
+//     resultMsg: string;
+// }
 
 export interface IComnCodMgrModalProps {
     modalClose: () => void;
     grpCod?: string;
 }
 
-export interface IComnGrpCodModel extends IComnCod {
-    fnl_mdfd_dtt?: string;
-}
-
-export interface ISaveComnGrpCodJson {
-    comnGrpCodModel: IComnGrpCodModel;
-    result: string;
-    resultMsg: string;
-}
-
 export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod }) => {
     const [modalOpen, setModalOpen] = useRecoilState<boolean>(modalState);
-    const [comnCod, setComnCod] = useState<IComnCod>();
+    const [comnCod, setComnCod] = useState<IComnCodModal>({ grp_cod: '', grp_cod_nm: '', use_poa: '' });
 
     useEffect(() => {
         if (grpCod) searchDetail();
@@ -54,7 +53,7 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
         };
 
         try {
-            await axios(postAction).then((res: AxiosResponse<ISaveComnGrpCodJson>) => {
+            await axios(postAction).then((res: AxiosResponse<IComnGrpCodDetail>) => {
                 if ((res.data.result = 'SUCCESS')) {
                     setComnCod(res.data.comnGrpCodModel);
                 }
