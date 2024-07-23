@@ -2,8 +2,9 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { ComnCodMgrModalStyled, ComnCodMgrTableStyled } from './styled';
 import { Button } from '../../../common/Button/Button';
-import { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { nullCheck } from '../../../../common/nullCheck';
 
 export interface IComnCod {
     grp_cod?: string;
@@ -64,6 +65,13 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
     };
 
     const handlerPost = async () => {
+        const isNull = nullCheck([
+            { inval: comnCod?.grp_cod, msg: '그룹코드를 입력해주세요' },
+            { inval: comnCod?.grp_cod_nm, msg: '그룹코드 이름을 입력해주세요' },
+            { inval: comnCod?.use_poa, msg: '사용여부를 입력해주세요' },
+        ]);
+
+        if (!isNull) return;
         const postAction: AxiosRequestConfig = {
             method: 'POST',
             url: '/system/saveComnGrpCodJson.do',
@@ -84,6 +92,13 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
     };
 
     const handlerUpdate = async () => {
+        const isNull = nullCheck([
+            { inval: comnCod?.grp_cod, msg: '그룹코드를 입력해주세요' },
+            { inval: comnCod?.grp_cod_nm, msg: '그룹코드 이름을 입력해주세요' },
+            { inval: comnCod?.use_poa, msg: '사용여부를 입력해주세요' },
+        ]);
+
+        if (!isNull) return;
         const postAction: AxiosRequestConfig = {
             method: 'POST',
             url: '/system/updateComnGrpCodJson.do',
@@ -96,7 +111,7 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
         try {
             await axios(postAction).then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === 'SUCCESS') {
-                    setModalOpen(!modalOpen);
+                    modalClose();
                 }
             });
         } catch (error) {
@@ -117,7 +132,7 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
         try {
             await axios(postAction).then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === 'SUCCESS') {
-                    setModalOpen(!modalOpen);
+                    modalClose();
                 }
             });
         } catch (error) {
@@ -135,7 +150,7 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
                 <ComnCodMgrTableStyled>
                     <tbody>
                         <tr>
-                            <th>그룹 코드 id</th>
+                            <th>그룹 코드 id *</th>
                             <td>
                                 <input
                                     type="text"
@@ -143,9 +158,10 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
                                     onChange={(e) => setComnCod({ ...comnCod, grp_cod: e.target.value })}
                                     defaultValue={comnCod?.grp_cod}
                                     readOnly={grpCod ? true : false}
+                                    required
                                 ></input>
                             </td>
-                            <th>그룹 코드 명</th>
+                            <th>그룹 코드 명 *</th>
                             <td>
                                 <input
                                     type="text"
@@ -166,7 +182,7 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ modalClose, grpCod 
                             </td>
                         </tr>
                         <tr>
-                            <th>사용 유무</th>
+                            <th>사용 유무 *</th>
                             <td colSpan={3}>
                                 <input
                                     type="radio"

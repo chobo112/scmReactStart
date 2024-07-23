@@ -5,6 +5,7 @@ import { useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import { loginInfoState } from '../../../stores/userInfo';
 import { ILoginInfo } from '../../../models/interface/store/userInfo';
+import logo_img from '../../../assets/logo_img.png';
 
 export interface IAccount {
     lgn_Id: string;
@@ -34,11 +35,11 @@ export const LoginMain = () => {
     };
     return (
         <LoginStyled>
-            <div>
+            <div className="login-container">
                 <div>
-                    <div>
-                        <div>
-                            <img alt="" />
+                    <div className="login-text">
+                        <div className="login-image">
+                            <img alt="" src={logo_img} />
                         </div>
                         <h3> 안되는 것이 실패가 아니라 포기하는 것이 실패다 </h3>
                         <div>
@@ -53,11 +54,12 @@ export const LoginMain = () => {
                         </div>
                         <div> -이대희, ‘1 % 의 가능성을 희망으로 바꾼 사람들’ 에서 </div>
                     </div>
-                    <div>
-                        <div>
+                    <div className="login-box">
+                        <div className="buttons inputs">
                             <div>
                                 <label> 아이디 </label>
                                 <input
+                                    required
                                     onChange={(e) => {
                                         setAccount((prev: IAccount) => {
                                             return { ...prev, lgn_Id: e.target.value };
@@ -68,6 +70,8 @@ export const LoginMain = () => {
                             <div>
                                 <label> 비밀번호 </label>
                                 <input
+                                    required
+                                    type="password"
                                     onChange={(e) => {
                                         setAccount((prev: IAccount) => {
                                             return { ...prev, pwd: e.target.value };
@@ -76,11 +80,10 @@ export const LoginMain = () => {
                                 />
                             </div>
                             <div>
-                                <button> [회원가입] </button>
-                                <button> [아이디 / 비밀번호 찾기] </button>
-                            </div>
-                            <div>
-                                <button onClick={loginHandler}> Login </button>
+                                <button className="login-button" onClick={loginHandler}>
+                                    Login
+                                </button>
+                                <button className="signup-button"> [회원가입] </button>
                             </div>
                         </div>
                     </div>

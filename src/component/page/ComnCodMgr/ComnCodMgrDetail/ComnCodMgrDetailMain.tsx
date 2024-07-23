@@ -1,11 +1,13 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Button } from '../../../common/Button/Button';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { ComnCodMgrDetailModal } from '../ComnCodMgrDetailModal/ComnCodMgrDetailModal';
+import { ContentBox } from '../../../common/ContentBox/ContentBox';
+import { ComnCodMgrDetailMainStyled } from './styled';
 
 export interface IComnCodMgrDetailRespose {
     totalCntComnDtlCod: number;
@@ -31,7 +33,6 @@ export const ComnCodMgrDetailMain = () => {
     const { grpCod } = useParams();
     const { state } = useLocation();
     const [comnDetailList, setComnDetailList] = useState<IComnCodMgrDetail[]>();
-    const [totalCount, setTotalCount] = useState<number>();
     const [modalOpen, setModalOpen] = useRecoilState<boolean>(modalState);
     const [detailCod, setDetailCod] = useState<string>();
     const [currentPage, setCrrentPage] = useState<number>();
@@ -55,7 +56,6 @@ export const ComnCodMgrDetailMain = () => {
         try {
             await axios(postAction).then((res: AxiosResponse<IComnCodMgrDetailRespose>) => {
                 setComnDetailList(res.data.listComnDtlCodModel);
-                setTotalCount(res.data.totalCntComnDtlCod);
                 setCrrentPage(cpage);
             });
         } catch (error) {
@@ -74,9 +74,10 @@ export const ComnCodMgrDetailMain = () => {
     };
 
     return (
-        <>
-            <Button onClick={handlerModal}>신규등록</Button>
+        <ComnCodMgrDetailMainStyled>
+            <ContentBox>공통코드 상세조회</ContentBox>
             <Button onClick={() => navigate(-1)}>뒤로가기</Button>
+            <Button onClick={handlerModal}>신규등록</Button>
             <StyledTable>
                 <thead>
                     <tr>
@@ -85,22 +86,23 @@ export const ComnCodMgrDetailMain = () => {
                         <StyledTh size={7}>상세코드명</StyledTh>
                         <StyledTh size={10}>상세코드 설명</StyledTh>
                         <StyledTh size={5}>사용여부</StyledTh>
-                        <StyledTh size={5}>비고</StyledTh>
                     </tr>
                 </thead>
                 <tbody>
                     {comnDetailList && comnDetailList?.length > 0 ? (
                         comnDetailList.map((a) => {
                             return (
-                                <tr key={a.dtl_cod} onClick={() => handlerModal(a.dtl_cod)}>
+                                <tr
+                                    key={a.dtl_cod}
+                                    onClick={() => {
+                                        handlerModal(a.dtl_cod);
+                                    }}
+                                >
                                     <StyledTd>{a.grp_cod}</StyledTd>
                                     <StyledTd>{a.dtl_cod}</StyledTd>
                                     <StyledTd>{a.dtl_cod_nm}</StyledTd>
                                     <StyledTd>{a.dtl_cod_eplti}</StyledTd>
                                     <StyledTd>{a.use_poa}</StyledTd>
-                                    <StyledTd>
-                                        <button>수정</button>
-                                    </StyledTd>
                                 </tr>
                             );
                         })
@@ -117,6 +119,6 @@ export const ComnCodMgrDetailMain = () => {
                     modalClose={modalClose}
                 ></ComnCodMgrDetailModal>
             </StyledTable>
-        </>
+        </ComnCodMgrDetailMainStyled>
     );
 };

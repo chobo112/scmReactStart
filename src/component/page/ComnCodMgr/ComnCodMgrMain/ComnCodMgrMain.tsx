@@ -1,13 +1,14 @@
 import axios, { AxiosResponse } from 'axios';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { ComnCodMgrMainStyled } from './styled';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button } from '../../../common/Button/Button';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { ComnCodMgrModal } from '../ComnCodMgrModal/ComnCodMgrModal';
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
 import { useNavigate } from 'react-router-dom';
+import { ComnCodContext } from '../../../../api/provider/ComnCodProvider';
 
 export interface IComnCod {
     row_num: number;
@@ -34,17 +35,18 @@ export const ComnCodMgrMain = () => {
     const [totalCount, setTotalCount] = useState<number>(1);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [grpCod, setGrpCod] = useState<string>();
+    const { searchKeyword } = useContext(ComnCodContext);
     const navigate = useNavigate();
-
     useEffect(() => {
         searchComnCod();
-    }, [modalOpen]);
+        console.log(searchKeyword);
+    }, [searchKeyword]);
 
     const searchComnCod = (cpage?: number) => {
         cpage = cpage || 1;
 
         axios
-            .post('/system/listComnGrpCodJson.do', { currentPage: cpage, pageSize: 5 })
+            .post('/system/listComnGrpCodJson.do', { ...searchKeyword, currentPage: cpage, pageSize: 5 })
             .then((res: AxiosResponse<ISearchComnCodMgr>) => {
                 setComnCodList(res.data.listComnGrpCod);
                 setTotalCount(res.data.totalCount);
@@ -72,18 +74,31 @@ export const ComnCodMgrMain = () => {
         return `${year}-${month}-${day}`;
     };
 
+    const modalClose = () => {
+        setModalOpen(!modalOpen);
+        searchComnCod(currentPage);
+    };
+
     return (
         <ComnCodMgrMainStyled>
             <Button onClick={handlerModal}>신규등록</Button>
             <StyledTable>
+                <colgroup>
+                    <col width="20%" />
+                    <col width="10%" />
+                    <col width="20%" />
+                    <col width="7%" />
+                    <col width="10%" />
+                    <col width="5%" />
+                </colgroup>
                 <thead>
                     <tr>
                         <StyledTh size={10}>그룹코드</StyledTh>
                         <StyledTh size={5}>그룹코드명</StyledTh>
                         <StyledTh size={10}>그룹코드 설명</StyledTh>
-                        <StyledTh size={3}>사용여부</StyledTh>
+                        <StyledTh size={5}>사용여부</StyledTh>
                         <StyledTh size={7}>등록일</StyledTh>
-                        <StyledTh size={5}>비고</StyledTh>
+                        <StyledTh size={3}>비고</StyledTh>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,7 +117,7 @@ export const ComnCodMgrMain = () => {
                                     <StyledTd>{a.use_poa}</StyledTd>
                                     <StyledTd>{fomatData(a.fst_enlm_dtt)}</StyledTd>
                                     <StyledTd>
-                                        <button onClick={(e) => handlerUpdateModal(e, a.grp_cod)}>수정</button>
+                                        <a onClick={(e) => handlerUpdateModal(e, a.grp_cod)}>수정</a>
                                     </StyledTd>
                                 </tr>
                             );
@@ -120,7 +135,7 @@ export const ComnCodMgrMain = () => {
                 activePage={currentPage}
                 itemsCountPerPage={5}
             ></PageNavigate>
-            {modalOpen ? <ComnCodMgrModal modalClose={searchComnCod} grpCod={grpCod}></ComnCodMgrModal> : null}
+            {modalOpen ? <ComnCodMgrModal modalClose={modalClose} grpCod={grpCod}></ComnCodMgrModal> : null}
         </ComnCodMgrMainStyled>
     );
 };

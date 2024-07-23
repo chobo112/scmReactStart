@@ -4,6 +4,7 @@ import { modalState } from '../../../../stores/modalState';
 import { Button } from '../../../common/Button/Button';
 import { FC, useEffect, useState } from 'react';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { nullCheck } from '../../../../common/nullCheck';
 
 export interface IComnCodMgrDetailProps {
     grpCod?: string;
@@ -61,9 +62,16 @@ export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpC
     };
 
     const handlerSave = async () => {
+        const isNull = nullCheck([
+            { inval: delatilObject?.dtl_cod, msg: '상세코드 id를 입력해주세요' },
+            { inval: delatilObject?.dtl_cod_nm, msg: '상세코드 명을 입력해주세요' },
+            { inval: delatilObject?.use_poa, msg: '사용여부를 입력해주세요' },
+        ]);
+
+        if (!isNull) return;
         const postAction: AxiosRequestConfig = {
             method: 'POST',
-            url: '/system/updateComnDtlCodJson.do',
+            url: '/system/saveComnDtlCodJson.do',
             data: { ...delatilObject, dtl_grp_cod: grpCod },
             headers: {
                 'Content-Type': 'application/json',
@@ -81,6 +89,12 @@ export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpC
     };
 
     const handlerUpdate = async () => {
+        const isNull = nullCheck([
+            { inval: delatilObject?.dtl_cod, msg: '상세코드 id를 입력해주세요' },
+            { inval: delatilObject?.dtl_cod_nm, msg: '상세코드 명을 입력해주세요' },
+            { inval: delatilObject?.use_poa, msg: '사용여부를 입력해주세요' },
+        ]);
+        if (!isNull) return;
         const postAction: AxiosRequestConfig = {
             method: 'POST',
             url: '/system/updateComnDtlCodJson.do',
@@ -143,7 +157,7 @@ export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpC
                             </td>
                         </tr>
                         <tr>
-                            <th>상세 코드 id</th>
+                            <th>상세 코드 id *</th>
                             <td>
                                 <input
                                     type="text"
@@ -152,7 +166,7 @@ export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpC
                                     readOnly={detailCod ? true : false}
                                 ></input>
                             </td>
-                            <th>상세 코드 명</th>
+                            <th>상세 코드 명 *</th>
                             <td>
                                 <input
                                     type="text"
@@ -174,7 +188,7 @@ export const ComnCodMgrDetailModal: FC<IComnCodMgrDetailProps> = ({ grpCod, grpC
                             </td>
                         </tr>
                         <tr>
-                            <th>사용 유무</th>
+                            <th>사용 유무 *</th>
                             <td colSpan={3}>
                                 <input
                                     type="radio"
