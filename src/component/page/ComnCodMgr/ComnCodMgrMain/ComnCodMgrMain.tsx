@@ -39,7 +39,7 @@ export const ComnCodMgrMain = () => {
     const navigate = useNavigate();
     useEffect(() => {
         searchComnCod();
-        console.log(searchKeyword);
+        // console.log(searchKeyword);
     }, [searchKeyword]);
 
     const searchComnCod = (cpage?: number) => {

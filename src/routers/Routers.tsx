@@ -4,8 +4,10 @@ import { DashBoard } from '../component/layout/DashBoard/DashBoard';
 import { Notice } from '../pages/Notice';
 import { ComnCodMgr } from '../pages/ComnCodMgr';
 import { ComnCodMgrDetailMain } from '../component/page/ComnCodMgr/ComnCodMgrDetail/ComnCodMgrDetailMain';
+import { NotFound } from '../component/common/NotFound/NotFound';
 
 const routers: RouteObject[] = [
+    { path: '*', element: <NotFound /> },
     { path: '/', element: <Login /> },
     {
         path: '/react',

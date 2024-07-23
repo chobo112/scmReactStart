@@ -26,6 +26,7 @@ export const LoginMain = () => {
 
             if (data.result === 'SUCCESS') {
                 setLoginInfo(data);
+                sessionStorage.setItem('userInfo', JSON.stringify(data));
                 navigate('/react');
             } else {
                 alert('ID 혹은 비밀번호가 틀립니다');
@@ -83,7 +84,7 @@ export const LoginMain = () => {
                                 <button className="login-button" onClick={loginHandler}>
                                     Login
                                 </button>
-                                <button className="signup-button"> [회원가입] </button>
+                                <button className="signup-button"> Sign Up </button>
                             </div>
                         </div>
                     </div>

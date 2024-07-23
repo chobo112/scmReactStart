@@ -1,15 +1,27 @@
-import { Suspense } from 'react';
+import { Suspense, useCallback, useEffect } from 'react';
 import { LeftMenuBar } from '../LeftMenuBar/LeftMenuBar';
 import { DashBoardStyled } from './styled';
-import { Outlet } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { loginInfoState } from '../../../stores/userInfo';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { ILoginInfo } from '../../../models/interface/store/userInfo';
+import { useUserInfo } from '../../../hook/useUserInfo';
 export const DashBoard = () => {
-    const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
-    if (!userInfo) {
-        alert('로그인부터 해줘');
-    }
+    // const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+    const userInfo = sessionStorage.getItem('userInfo');
+    const navigate = useNavigate();
+    useUserInfo();
+
+    useEffect(() => {
+        if (userInfo) {
+            const userInfoObj: ILoginInfo = JSON.parse(userInfo);
+            if (userInfoObj.result !== 'SUCCESS') {
+                alert('로그인을 실패했습니다');
+                navigate('/');
+            }
+        } else {
+            alert('로그인부터 해주세요');
+            navigate('/');
+        }
+    }, [userInfo]);
     return (
         <DashBoardStyled>
             <ul className="dashboard-ul">

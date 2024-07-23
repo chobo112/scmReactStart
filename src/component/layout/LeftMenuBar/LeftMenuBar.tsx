@@ -6,13 +6,20 @@ import { ILoginInfo, IMenuState } from '../../../models/interface/store/userInfo
 import { loginInfoState } from '../../../stores/userInfo';
 import { LeftMenuBarStyled, StyledLink } from './styled';
 import { useRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
 export const LeftMenuBar = () => {
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const [isClick, setIsClick] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const handlerClick = () => {
         setIsClick(!isClick);
+    };
+
+    const handlerLogout = () => {
+        sessionStorage.setItem('userInfo', '');
+        navigate('/');
     };
 
     return (
@@ -24,11 +31,11 @@ export const LeftMenuBar = () => {
                 <img src={logoImage} alt="logoImage" />
                 <div className="user-info">
                     <div>{userInfo.loginId}</div>
-                    <button>로그아웃</button>
+                    <button onClick={handlerLogout}>로그아웃</button>
                 </div>
             </div>
             <ul>
-                {userInfo.usrMnuAtrt.map((menuAttrt: IMenuState) => {
+                {userInfo?.usrMnuAtrt?.map((menuAttrt: IMenuState) => {
                     return (
                         <li key={menuAttrt.mnu_id} className="parent-menu">
                             <img src={menu} alt="menu" />

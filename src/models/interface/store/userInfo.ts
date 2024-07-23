@@ -1,9 +1,10 @@
 export interface ILoginInfo {
-    loginId: string;
-    userNm: string;
-    usrMnuAtrt: IMenuState[];
-    userType: string;
-    serverName: string;
+    loginId?: string;
+    userNm?: string;
+    usrMnuAtrt?: IMenuState[];
+    userType?: string;
+    serverName?: string;
+    result?: string;
 }
 
 export interface ISubmenuState {
