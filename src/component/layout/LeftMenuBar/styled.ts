@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const LeftMenuBarStyled = styled.div<{
-    isclicked: string | undefined;
-}>`
+export const LeftMenuBarStyled = styled.div`
+    padding-bottom: 100%;
     a {
         cursor: pointer;
     }
@@ -56,23 +55,26 @@ export const LeftMenuBarStyled = styled.div<{
     .parent-menu {
         font-weight: bold;
         padding-top: 30px;
+        padding-bottom: 20px;
         border-bottom: 1px solid #d6effc;
         color: #602e2e;
 
         &:hover {
             transition: 1s;
+            padding-bottom: 0;
             .child-menu-box {
                 opacity: 1;
-                visibility: visible;
+                display: block;
+                // visibility: visible;
                 height: 100%;
                 margin-top: 30px;
             }
         }
 
         .child-menu-box {
-            display: block;
+            display: none;
             opacity: 0;
-            visibility: hidden;
+            // visibility: hidden;
             transition: opacity 0.2s, visibility 0s;
             background: #2e9acc;
             height: 0;
@@ -89,6 +91,18 @@ export const LeftMenuBarStyled = styled.div<{
                     color: white;
                 }
             }
+        }
+
+        .active {
+            opacity: 1;
+            display: block;
+            height: 100%;
+            margin-top: 30px;
+        }
+
+        .active-link {
+            text-decoration: underline;
+            color: white;
         }
 
         img {

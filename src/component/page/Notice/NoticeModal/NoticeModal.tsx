@@ -135,6 +135,13 @@ export const NoticeModal: FC<NoticeModalProps> = ({ modalOpen, noticeSeq, handle
         }
     };
 
+    const downLoadFile = () => {
+        let param = new URLSearchParams();
+        param.append('noticeSeq', noticeSeq?.toString() as string);
+        // if (noticeSeq) param.append('noticeSeq', noticeSeq.toString());
+        axios.post('/board/noticeDownload.do', param);
+    };
+
     return (
         <NoticeModalStyled>
             <div className="container">
@@ -151,7 +158,7 @@ export const NoticeModal: FC<NoticeModalProps> = ({ modalOpen, noticeSeq, handle
                 {imageURL !== 'notImage' ? (
                     <div>
                         <label>미리보기</label>
-                        <img src={imageURL} />
+                        <img src={imageURL} onClick={downLoadFile} />
                     </div>
                 ) : (
                     <div>

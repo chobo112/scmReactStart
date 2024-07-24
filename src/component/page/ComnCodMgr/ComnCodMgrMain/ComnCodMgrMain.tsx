@@ -71,7 +71,7 @@ export const ComnCodMgrMain = () => {
         axios(postAction).then((res: AxiosResponse<ISearchComnCodMgr>) => {
             setComnCodList(res.data.listComnGrpCod);
             setTotalCount(res.data.totalCount);
-            setCurrentPage(cpage || 1);
+            setCurrentPage(cpage as number);
         });
     };
 

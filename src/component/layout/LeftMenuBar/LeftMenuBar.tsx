@@ -10,11 +10,36 @@ import { useNavigate } from 'react-router-dom';
 
 export const LeftMenuBar = () => {
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
-    const [isClick, setIsClick] = useState<boolean>(false);
     const navigate = useNavigate();
 
-    const handlerClick = () => {
-        setIsClick(!isClick);
+    const handlerClick = (menuId: string, e: React.MouseEvent<HTMLDivElement>) => {
+        const childMenuId = document.getElementById(menuId);
+        const childMenuClass = document.getElementsByClassName('child-menu-box');
+        Array.from(childMenuClass).forEach((childMenu) => {
+            childMenu.classList.remove('active');
+        });
+
+        if (e) {
+            if (e.currentTarget.id === menuId) {
+                childMenuId?.classList.toggle('active');
+            } else {
+                childMenuId?.classList.remove();
+            }
+        }
+    };
+
+    const handlerMenuLinkClick = (menuId: string, e: React.MouseEvent<HTMLDivElement>) => {
+        const childLinkId = document.getElementById(menuId);
+        const childLinkClass = document.getElementsByClassName('child-menu-link');
+        Array.from(childLinkClass).forEach((childLink) => {
+            childLink.classList.remove('active-link');
+        });
+
+        if (e.currentTarget.id === menuId) {
+            childLinkId?.classList.toggle('active-link');
+        } else {
+            childLinkId?.classList.remove();
+        }
     };
 
     const handlerLogout = () => {
@@ -23,7 +48,7 @@ export const LeftMenuBar = () => {
     };
 
     return (
-        <LeftMenuBarStyled isclicked={isClick.toString()}>
+        <LeftMenuBarStyled>
             <a href="/react">
                 <img src={logo_img} alt="happyjob" />
             </a>
@@ -40,11 +65,21 @@ export const LeftMenuBar = () => {
                         <li key={menuAttrt.mnu_id} className="parent-menu">
                             <img src={menu} alt="menu" />
                             {menuAttrt.mnu_nm}
-                            <div className="child-menu-box" onClick={handlerClick}>
+                            <div
+                                className="child-menu-box"
+                                onClick={(e) => handlerClick(menuAttrt.mnu_id, e)}
+                                id={menuAttrt.mnu_id}
+                            >
                                 {menuAttrt.nodeList.map((node) => {
                                     return (
                                         <StyledLink to={'/react' + node.mnu_url} key={node.mnu_id}>
-                                            <div onClick={handlerClick}>{node.mnu_nm}</div>
+                                            <div
+                                                className="child-menu-link"
+                                                id={node.mnu_id}
+                                                onClick={(e) => handlerMenuLinkClick(node.mnu_id, e)}
+                                            >
+                                                {node.mnu_nm}
+                                            </div>
                                         </StyledLink>
                                     );
                                 })}
