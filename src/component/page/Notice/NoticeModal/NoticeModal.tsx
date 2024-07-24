@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { NoticeModalStyled } from './styled';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useRecoilState } from 'recoil';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
@@ -125,7 +125,7 @@ export const NoticeModal: FC<NoticeModalProps> = ({ modalOpen, noticeSeq, handle
         if (fileInfo?.length) {
             const fileInfoSplit = fileInfo[0].name.split('.');
             const fileExtension = fileInfoSplit[1].toLowerCase();
-
+            console.log(fileInfo);
             if (fileExtension === 'jpg' || fileExtension === 'gif' || fileExtension === 'png') {
                 setImageURL(URL.createObjectURL(fileInfo[0]));
             } else {
@@ -135,11 +135,31 @@ export const NoticeModal: FC<NoticeModalProps> = ({ modalOpen, noticeSeq, handle
         }
     };
 
-    const downLoadFile = () => {
+    const downLoadFile = async () => {
         let param = new URLSearchParams();
         param.append('noticeSeq', noticeSeq?.toString() as string);
-        // if (noticeSeq) param.append('noticeSeq', noticeSeq.toString());
-        axios.post('/board/noticeDownload.do', param);
+
+        // blob: Binary Large Object의 약자로, 대용량 이진 데이터(0과 1로 구성 되어 있는 데이터, binary data)를 다루기 위한 객체
+        const postAction: AxiosRequestConfig = {
+            url: '/board/noticeDownload.do',
+            method: 'POST',
+            data: param,
+            responseType: 'blob', // 중요한 부분: 응답 타입을 'blob'으로 설정
+        };
+
+        // a 태크를 삽입하는 이유 : 1. 브라우저 호환성(크롬, 엣지, 웨일 어디서든 가능)
+        //                        2. 단순성(추가적인 라이브러리가 필요없이 쉽게 구현 가능)
+        await axios(postAction).then((res) => {
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', noticeDetail?.file_name as string); // 파일 이름 설정
+            document.body.appendChild(link);
+            link.click();
+
+            // 링크를 삭제하여 메모리 누수 방지
+            link.remove();
+        });
     };
 
     return (
@@ -155,17 +175,19 @@ export const NoticeModal: FC<NoticeModalProps> = ({ modalOpen, noticeSeq, handle
                 <label className="img-label" htmlFor="fileInput">
                     파일 첨부하기
                 </label>
-                {imageURL !== 'notImage' ? (
-                    <div>
-                        <label>미리보기</label>
-                        <img src={imageURL} onClick={downLoadFile} />
-                    </div>
-                ) : (
-                    <div>
-                        <label>파일명</label>
-                        {fileData?.name || noticeDetail?.file_name}
-                    </div>
-                )}
+                <div onClick={downLoadFile}>
+                    {imageURL !== 'notImage' ? (
+                        <div>
+                            <label>미리보기</label>
+                            <img src={imageURL} />
+                        </div>
+                    ) : (
+                        <div>
+                            <label>파일명</label>
+                            {fileData?.name || noticeDetail?.file_name}
+                        </div>
+                    )}
+                </div>
                 <div className={'button-container'}>
                     <button onClick={noticeSeq ? handlerUpdate : handlerInsert}>{noticeSeq ? '수정' : '저장'}</button>
                     {noticeSeq ? <button onClick={handlerDelete}>삭제</button> : null}

@@ -61,11 +61,9 @@ export const LeftMenuBarStyled = styled.div`
 
         &:hover {
             transition: 1s;
-            padding-bottom: 0;
             .child-menu-box {
                 opacity: 1;
                 display: block;
-                // visibility: visible;
                 height: 100%;
                 margin-top: 30px;
             }
@@ -74,7 +72,6 @@ export const LeftMenuBarStyled = styled.div`
         .child-menu-box {
             display: none;
             opacity: 0;
-            // visibility: hidden;
             transition: opacity 0.2s, visibility 0s;
             background: #2e9acc;
             height: 0;
