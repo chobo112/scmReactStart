@@ -1,11 +1,10 @@
-import { Suspense, useCallback, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { LeftMenuBar } from '../LeftMenuBar/LeftMenuBar';
 import { DashBoardStyled } from './styled';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { ILoginInfo } from '../../../models/interface/store/userInfo';
 import { useUserInfo } from '../../../hook/useUserInfo';
 export const DashBoard = () => {
-    // const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const userInfo = sessionStorage.getItem('userInfo');
     const navigate = useNavigate();
     useUserInfo();
