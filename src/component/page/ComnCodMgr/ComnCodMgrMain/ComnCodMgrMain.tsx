@@ -10,22 +10,9 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { ComnCodMgrModal } from '../ComnCodMgrModal/ComnCodMgrModal';
 import { useNavigate } from 'react-router-dom';
-
-export interface IComnCodList {
-    row_num: number;
-    grp_cod: string;
-    grp_cod_nm: string;
-    grp_cod_eplti: string;
-    use_poa: string;
-    fst_enlm_dtt: number;
-    reg_date: string | null;
-    detailcnt: number;
-}
-
-export interface ISearchComnCod {
-    totalCount: number;
-    listComnGrpCod: IComnCodList[];
-}
+import { IComnCodList, ISearchComnCod } from '../../../../models/interface/ComncodeMgr/comnCodeMgrModel';
+import { postComnCodMgrApi } from '../../../../api/postComnCodMgrApi';
+import { ComnCodMgrApi } from '../../../../api/api';
 
 export const ComnCodMgrMain = () => {
     const [comnCodList, setComnCodList] = useState<IComnCodList[]>();
@@ -40,23 +27,35 @@ export const ComnCodMgrMain = () => {
         searchComnCod();
     }, [searchKeyword]);
 
-    const searchComnCod = (cpage?: number) => {
+    const searchComnCod = async (cpage?: number) => {
         cpage = cpage || 1;
         // axios.post('/system/listComnGrpCodJson.do', { currentPage: cpage, pageSize: 5 });
-        const postAction: AxiosRequestConfig = {
-            method: 'POST',
-            url: '/system/listComnGrpCodJson.do',
-            data: { ...searchKeyword, currentPage: cpage, pageSize: 5 },
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        };
+        // const postAction: AxiosRequestConfig = {
+        //     method: 'POST',
+        //     url: '/system/listComnGrpCodJson.do',
+        //     data: { ...searchKeyword, currentPage: cpage, pageSize: 5 },
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        // };
 
-        axios(postAction).then((res: AxiosResponse<ISearchComnCod>) => {
-            setComnCodList(res.data.listComnGrpCod);
-            setTotalCnt(res.data.totalCount);
-            setCurrentPage(cpage);
+        // axios(postAction).then((res: AxiosResponse<ISearchComnCod>) => {
+        //     setComnCodList(res.data.listComnGrpCod);
+        //     setTotalCnt(res.data.totalCount);
+        //     setCurrentPage(cpage);
+        // });
+
+        const postSearchComnCod = await postComnCodMgrApi<ISearchComnCod>(ComnCodMgrApi.listComnGrpCodJson, {
+            ...searchKeyword,
+            currentPage: cpage,
+            pageSize: 5,
         });
+
+        if (postSearchComnCod) {
+            setComnCodList(postSearchComnCod.listComnGrpCod);
+            setTotalCnt(postSearchComnCod.totalCount);
+            setCurrentPage(cpage);
+        }
     };
 
     const onPostSuccess = () => {
@@ -105,7 +104,7 @@ export const ComnCodMgrMain = () => {
                                 <tr
                                     key={a.grp_cod}
                                     onClick={() => {
-                                        navigate(a.grp_cod);
+                                        navigate(a.grp_cod, { state: { grpCodNm: a.grp_cod_nm } });
                                     }}
                                 >
                                     <StyledTd>{a.grp_cod}</StyledTd>

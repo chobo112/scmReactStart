@@ -4,22 +4,8 @@ import { modalState } from '../../../../stores/modalState';
 import { Button } from '../../../common/Button/Button';
 import { FC, useEffect, useState } from 'react';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-
-export interface IComnCod {
-    grp_cod?: string;
-    grp_cod_nm?: string;
-    use_poa?: string;
-    grp_cod_eplti?: string;
-}
-
-export interface IPostResponse {
-    result: 'SUCCESS';
-}
-
-export interface IDetailResponse extends IPostResponse {
-    comnGrpCodModel: IComnCod;
-    resultMsg: string;
-}
+import { IComnCod, IDetailResponse } from '../../../../models/interface/ComncodeMgr/comnCodeMgrModel';
+import { IPostResponse } from '../../Notice/NoticeModal/NoticeModal';
 
 export interface IComnCodMgrModalProps {
     onPostSuccess: () => void;
@@ -28,8 +14,9 @@ export interface IComnCodMgrModalProps {
 }
 
 export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ onPostSuccess, grpCod, setGrpCod }) => {
+    const defaultValue = { grp_cod: '', grp_cod_nm: '', grp_cod_eplti: '', use_poa: '' };
     const [modal, setModal] = useRecoilState(modalState);
-    const [comnCod, setComnCod] = useState<IComnCod>();
+    const [comnCod, setComnCod] = useState<IComnCod>(defaultValue);
     useEffect(() => {
         if (modal && grpCod) searchDetail(grpCod);
     }, [modal]);
@@ -103,7 +90,7 @@ export const ComnCodMgrModal: FC<IComnCodMgrModalProps> = ({ onPostSuccess, grpC
     };
 
     const cleanUp = () => {
-        setComnCod(undefined);
+        setComnCod(defaultValue);
         setGrpCod('');
     };
 

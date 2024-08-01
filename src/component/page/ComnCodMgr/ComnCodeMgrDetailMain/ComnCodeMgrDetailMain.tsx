@@ -5,31 +5,20 @@ import { Button } from '../../../common/Button/Button';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
-
-export interface IListComnDtlCodJsonResponse {
-    totalCntComnDtlCod: number;
-    listComnDtlCodModel: IComnDetailList[];
-    pageSize: number;
-    currentPageComnDtlCod: number;
-}
-
-export interface IComnDetailList {
-    row_num: number;
-    grp_cod: string;
-    grp_cod_nm: string;
-    dtl_cod: string;
-    dtl_cod_nm: string;
-    dtl_cod_eplti: string;
-    use_poa: string;
-    fst_enlm_dtt: string;
-    fst_rgst_sst_id: string;
-    fnl_mdfd_dtt: string;
-}
+import { useRecoilState } from 'recoil';
+import { modalState } from '../../../../stores/modalState';
+import { ComnCodeMgrDetailModal } from '../ComnCodeMgrDetailModal/ComnCodeMgrDetailModal';
+import {
+    IComnDetailList,
+    IListComnDtlCodJsonResponse,
+} from '../../../../models/interface/ComncodeMgr/comnCodeMgrModel';
 
 export const ComnCodeMgrDetailMain = () => {
     const { grpCod } = useParams();
     const navigate = useNavigate();
     const [comnDetailList, setComnDetailList] = useState<IComnDetailList[]>();
+    const [modal, setModal] = useRecoilState(modalState);
+    const [detailCod, setDetailCode] = useState<string>();
 
     useEffect(() => {
         searchComnCodeDetail();
@@ -51,11 +40,21 @@ export const ComnCodeMgrDetailMain = () => {
         });
     };
 
+    const handlerModal = (dltCd?: string) => {
+        setModal(!modal);
+        setDetailCode(dltCd);
+    };
+
+    const onPostSuccess = () => {
+        setModal(!modal);
+        searchComnCodeDetail();
+    };
+
     return (
         <ComnCodeMgrDetailMainStyled>
             <ContentBox>공통코드 상세조회</ContentBox>
             <Button onClick={() => navigate(-1)}>뒤로가기</Button>
-            <Button>신규등록</Button>
+            <Button onClick={handlerModal}>신규등록</Button>
             <StyledTable>
                 <thead>
                     <tr>
@@ -70,7 +69,7 @@ export const ComnCodeMgrDetailMain = () => {
                     {comnDetailList && comnDetailList.length > 0 ? (
                         comnDetailList.map((a) => {
                             return (
-                                <tr>
+                                <tr key={a.dtl_cod} onClick={() => handlerModal(a.dtl_cod)}>
                                     <StyledTd>{a.grp_cod}</StyledTd>
                                     <StyledTd>{a.dtl_cod}</StyledTd>
                                     <StyledTd>{a.dtl_cod_nm}</StyledTd>
@@ -86,6 +85,7 @@ export const ComnCodeMgrDetailMain = () => {
                     )}
                 </tbody>
             </StyledTable>
+            <ComnCodeMgrDetailModal detailCod={detailCod} onPostSuccess={onPostSuccess}></ComnCodeMgrDetailModal>
         </ComnCodeMgrDetailMainStyled>
     );
 };
