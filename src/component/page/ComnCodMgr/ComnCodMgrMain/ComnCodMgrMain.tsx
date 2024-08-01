@@ -2,13 +2,14 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Button } from '../../../common/Button/Button';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { ComnCodMgrMainStyled } from './styled';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { fomatDate } from '../../../../common/fomatData';
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
 import { ConmCodContext } from '../../../../api/provider/ComnCodMgrProvider';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { ComnCodMgrModal } from '../ComnCodMgrModal/ComnCodMgrModal';
+import { useNavigate } from 'react-router-dom';
 
 export interface IComnCodList {
     row_num: number;
@@ -33,6 +34,7 @@ export const ComnCodMgrMain = () => {
     const { searchKeyword } = useContext(ConmCodContext);
     const [modal, setModal] = useRecoilState(modalState);
     const [grpCod, setGrpCod] = useState<string>('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         searchComnCod();
@@ -62,7 +64,8 @@ export const ComnCodMgrMain = () => {
         searchComnCod(currentPage);
     };
 
-    const handlerModal = (grpCod: string) => {
+    const handlerModal = (grpCod: string, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        e.stopPropagation();
         setGrpCod(grpCod);
         setModal(!modal);
     };
@@ -99,7 +102,12 @@ export const ComnCodMgrMain = () => {
                     {comnCodList && comnCodList?.length > 0 ? (
                         comnCodList.map((a) => {
                             return (
-                                <tr key={a.grp_cod}>
+                                <tr
+                                    key={a.grp_cod}
+                                    onClick={() => {
+                                        navigate(a.grp_cod);
+                                    }}
+                                >
                                     <StyledTd>{a.grp_cod}</StyledTd>
                                     <StyledTd>{a.grp_cod_nm}</StyledTd>
                                     <StyledTd>{a.grp_cod_eplti}</StyledTd>
@@ -107,8 +115,8 @@ export const ComnCodMgrMain = () => {
                                     <StyledTd>{fomatDate(a.fst_enlm_dtt)}</StyledTd>
                                     <StyledTd>
                                         <a
-                                            onClick={() => {
-                                                handlerModal(a.grp_cod);
+                                            onClick={(e) => {
+                                                handlerModal(a.grp_cod, e);
                                             }}
                                         >
                                             수정
