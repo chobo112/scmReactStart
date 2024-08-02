@@ -21,7 +21,10 @@ export const LoginMain = () => {
     const navigate = useNavigate();
 
     const loginHandler = () => {
-        axios.post('/loginProc.do', account).then((res) => {
+        let urlParam = new URLSearchParams();
+        urlParam.append('lgn_Id', account.lgn_Id);
+        urlParam.append('pwd', account.pwd);
+        axios.post('/loginProc.do', urlParam).then((res) => {
             const data = res.data;
 
             if (data.result === 'SUCCESS') {
